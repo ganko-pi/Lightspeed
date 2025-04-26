@@ -6,12 +6,12 @@ namespace Lightspeed;
 
 public class LightspeedGame : Game
 {
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    private GraphicsDeviceManager _Graphics;
+    private SpriteBatch _SpriteBatch;
 
     public LightspeedGame()
     {
-        _graphics = new GraphicsDeviceManager(this);
+        _Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
@@ -25,7 +25,7 @@ public class LightspeedGame : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        _SpriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
     }
@@ -33,9 +33,9 @@ public class LightspeedGame : Game
     protected override void Update(GameTime gameTime)
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+        {
             Exit();
-
-        // TODO: Add your update logic here
+        }
 
         base.Update(gameTime);
     }
