@@ -1,2 +1,10 @@
-﻿using var game = new Lightspeed.Game1();
-game.Run();
+﻿namespace Lightspeed;
+
+internal class Program
+{
+    private static void Main()
+    {
+        using LightspeedGame game = new();
+        game.Run();
+    }
+}
