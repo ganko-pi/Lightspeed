@@ -12,7 +12,9 @@ public class LightspeedGame : Game
     private GraphicsDeviceManager _Graphics;
     private SpriteBatch _SpriteBatch;
     private OrthographicCamera _Camera;
+    private Background _Background = new();
     private Player _Player = new();
+    private Vector2 _PlayerPositionRelativeToCamera = new(0.5f, 0.825f);
 
     public LightspeedGame()
     {
@@ -39,6 +41,9 @@ public class LightspeedGame : Game
     {
         _SpriteBatch = new SpriteBatch(GraphicsDevice);
 
+        Texture2D backgroundTexture = Content.Load<Texture2D>("Background/starfield");
+        _Background.Texture = backgroundTexture;
+
         Texture2D playerTexture = Content.Load<Texture2D>("Player/player");
         _Player.Texture = new Sprite(playerTexture, frameCount: 4, fps: 8);
     }
@@ -54,9 +59,11 @@ public class LightspeedGame : Game
 
         SizeF cameraViewport = _Camera.BoundingRectangle.Size;
         Vector2 playerTopLeftCornerRelativeToCameraTopLeftCorner = new(
-            cameraViewport.Width / 2 + (_Player.Texture.Size.X * _Player.Texture.Scale) / 2,
-            cameraViewport.Height / 2 + (_Player.Texture.Size.Y * _Player.Texture.Scale) / 2);
+            cameraViewport.Width * _PlayerPositionRelativeToCamera.X + (_Player.Texture.Size.X * _Player.Texture.Scale) / 2,
+            cameraViewport.Height * _PlayerPositionRelativeToCamera.Y + (_Player.Texture.Size.Y * _Player.Texture.Scale) / 2);
         _Camera.Position = _Player.Position - playerTopLeftCornerRelativeToCameraTopLeftCorner;
+
+        _Background.Update(_Camera.Position, _Camera.BoundingRectangle.Size);
 
         base.Update(gameTime);
     }
@@ -67,6 +74,11 @@ public class LightspeedGame : Game
 
         Matrix transformMatrix = _Camera.GetViewMatrix();
         _SpriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        foreach (Sprite backgroundPart in _Background.TexturesToDraw)
+        {
+            backgroundPart.Draw(_SpriteBatch);
+        }
+
         _Player.Texture.Draw(_SpriteBatch);
         _SpriteBatch.End();
 
