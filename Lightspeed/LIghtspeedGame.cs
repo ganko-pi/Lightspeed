@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -16,6 +17,8 @@ public class LightspeedGame : Game
     private Background _Background = new();
     private Score _Score = new();
     private Player _Player = new();
+    private CannonCreator _CannonCreator = new();
+    private List<Cannon> _Cannons = [];
     private Vector2 _PlayerPositionRelativeToCamera = new(0.5f, 0.825f);
 
     public LightspeedGame()
@@ -81,6 +84,24 @@ public class LightspeedGame : Game
             cameraViewport.Height * _PlayerPositionRelativeToCamera.Y + (_Player.Texture.Size.Y * _Player.Texture.Scale) / 2);
         _Camera.Position = _Player.Position - playerTopLeftCornerRelativeToCameraTopLeftCorner;
 
+        List<Cannon> cannonsToRemove = [];
+        foreach (Cannon cannon in _Cannons)
+        {
+            cannon.Update(gameTime, _Camera.Position, _Camera.BoundingRectangle.Size);
+            if (cannon.Position.Y > (_Camera.Position.Y + _Camera.BoundingRectangle.Size.Height))
+            {
+                cannonsToRemove.Add(cannon);
+            }
+        }
+
+        foreach (Cannon cannonToRemove in cannonsToRemove)
+        {
+            _Cannons.Remove(cannonToRemove);
+        }
+
+        List<Cannon> newCannons = _CannonCreator.CreateCannons(gameTime, _Camera.Position, _Camera.BoundingRectangle.Size);
+        _Cannons.AddRange(newCannons);
+
         _Background.Update(_Camera.Position, _Camera.BoundingRectangle.Size);
 
         base.Update(gameTime);
@@ -99,6 +120,11 @@ public class LightspeedGame : Game
 
         _Score.Draw(_SpriteBatch, _Camera.Position, _Camera.BoundingRectangle.Size);
         _Player.Texture.Draw(_SpriteBatch);
+        foreach (Cannon cannon in _Cannons)
+        {
+            cannon.Draw(_SpriteBatch);
+        }
+
         _SpriteBatch.End();
 
         base.Draw(gameTime);
