@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Extended;
+using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.ViewportAdapters;
 
 namespace Lightspeed;
@@ -13,6 +14,7 @@ public class LightspeedGame : Game
     private SpriteBatch _SpriteBatch;
     private OrthographicCamera _Camera;
     private Background _Background = new();
+    private Score _Score = new();
     private Player _Player = new();
     private Vector2 _PlayerPositionRelativeToCamera = new(0.5f, 0.825f);
 
@@ -46,6 +48,9 @@ public class LightspeedGame : Game
 
         Texture2D playerTexture = Content.Load<Texture2D>("Player/player");
         _Player.Texture = new Sprite(playerTexture, frameCount: 4, fps: 8);
+
+        BitmapFont scoreFont = Content.Load<BitmapFont>("Font/score_font");
+        _Score.ScoreFont = scoreFont;
     }
 
     protected override void Update(GameTime gameTime)
@@ -54,6 +59,9 @@ public class LightspeedGame : Game
         {
             Exit();
         }
+
+        _Score.Start(gameTime);
+        _Score.Update(gameTime);
 
         _Player.Update(gameTime);
 
@@ -79,6 +87,7 @@ public class LightspeedGame : Game
             backgroundPart.Draw(_SpriteBatch);
         }
 
+        _Score.Draw(_SpriteBatch, _Camera.Position, _Camera.BoundingRectangle.Size);
         _Player.Texture.Draw(_SpriteBatch);
         _SpriteBatch.End();
 

@@ -14,6 +14,35 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Background/starfield.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Background/starfield.png
+
+#begin Font/Corvid Conspirator (White).fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:Font/Corvid Conspirator (White).fnt;Font/score_font.fnt
+
+#begin Font/Corvid Conspirator (White).png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Font/Corvid Conspirator (White).png
+
 #begin Player/player.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -26,14 +55,3 @@
 /processorParam:TextureFormat=Color
 /build:Player/player.png
 
-#begin Background/starfield.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Background/starfield.png
