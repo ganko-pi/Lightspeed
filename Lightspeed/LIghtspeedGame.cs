@@ -60,6 +60,17 @@ public class LightspeedGame : Game
             Exit();
         }
 
+        if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed ||
+            Keyboard.GetState().IsKeyDown(Keys.Space) ||
+            Keyboard.GetState().IsKeyDown(Keys.U))
+        {
+            _Player.Speed = Speed.Slow;
+        }
+        else
+        {
+            _Player.Speed = Speed.Fast;
+        }
+
         _Score.Start(gameTime);
         _Score.Update(gameTime);
 

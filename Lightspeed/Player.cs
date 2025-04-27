@@ -9,8 +9,8 @@ public class Player
     private Vector2 _Position = new(50, 100);
     private readonly Dictionary<Speed, int> _SpeedMap = new()
     {
-        { Speed.Slow, 500 },
-        { Speed.Fast, 1000 },
+        { Speed.Slow, 2000 },
+        { Speed.Fast, 5000 },
     };
 
     public Speed Speed { get; set; } = Speed.Fast;
