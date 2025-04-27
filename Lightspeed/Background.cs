@@ -18,7 +18,6 @@ public class Background
         float wholeTextureOffsetY = screenLeftTop.Y / (Texture.Height * scale) - 0.5f;
         if (previousOffset != (int)wholeTextureOffsetY)
         {
-            Console.WriteLine(wholeTextureOffsetY);
             previousOffset = (int)wholeTextureOffsetY;
         }
 

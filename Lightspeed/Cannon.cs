@@ -59,8 +59,6 @@ public class Cannon
 
             _LastShot += ShotInterval;
         }
-
-        Console.WriteLine(Projectiles.Count);
     }
 
     public void Draw(SpriteBatch spriteBatch)
