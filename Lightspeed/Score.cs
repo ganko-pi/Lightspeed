@@ -8,37 +8,20 @@ namespace Lightspeed;
 
 public class Score
 {
-    private TimeSpan? _StartedAt = null;
-    private readonly float _PointsPerSecond = 2f;
+    private readonly float _PointsPerDistanceUnit = 1f;
 
     public int CurrentScore { get; set; } = 0;
     public BitmapFont ScoreFont { get; set; }
 
-    public void Start(GameTime gameTime)
-    {
-        if (_StartedAt != null)
-        {
-            return;
-        }
-
-        _StartedAt = gameTime.TotalGameTime;
-    }
-
     public void Reset()
     {
-        _StartedAt = null;
         CurrentScore = 0;
     }
 
-    public void Update(GameTime gameTime)
+    public void Update(GameTime gameTime, Vector2 screenLeftTop, SizeF screenSize)
     {
-        if (_StartedAt == null)
-        {
-            return;
-        }
-
-        TimeSpan timeSinceStart = gameTime.TotalGameTime - (TimeSpan)_StartedAt;
-        CurrentScore = (int)(timeSinceStart.TotalSeconds * _PointsPerSecond);
+        int distanceFromStart = -(int)(screenLeftTop.Y / 1000f);
+        CurrentScore = (int)(distanceFromStart * _PointsPerDistanceUnit);
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 screenLeftTop, SizeF screenSize)

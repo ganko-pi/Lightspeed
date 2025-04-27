@@ -71,8 +71,7 @@ public class LightspeedGame : Game
             _Player.Speed = Speed.Fast;
         }
 
-        _Score.Start(gameTime);
-        _Score.Update(gameTime);
+        _Score.Update(gameTime, _Camera.Position, _Camera.BoundingRectangle.Size);
 
         _Player.Update(gameTime);
 
