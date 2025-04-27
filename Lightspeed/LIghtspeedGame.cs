@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,6 +14,7 @@ public class LightspeedGame : Game
 {
     private GraphicsDeviceManager _Graphics;
     private SpriteBatch _SpriteBatch;
+    private BitmapFont _Font;
     private OrthographicCamera _Camera;
     private Background _Background = new();
     private Score _Score = new();
@@ -20,6 +22,8 @@ public class LightspeedGame : Game
     private CannonCreator _CannonCreator = new();
     private List<Cannon> _Cannons = [];
     private Vector2 _PlayerPositionRelativeToCamera = new(0.5f, 0.825f);
+    private bool _GameOver;
+    private bool _ButtonReleasedAfterGameOver = false;
 
     public LightspeedGame()
     {
@@ -37,9 +41,21 @@ public class LightspeedGame : Game
 
         ViewportAdapter viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 16000, 9000);
         _Camera = new OrthographicCamera(viewportAdapter);
-        _Camera.LookAt(_Player.Position);
+        Reset();
 
         base.Initialize();
+    }
+
+    private void Reset()
+    {
+        _GameOver = false;
+
+        _Player.Reset();
+        _Camera.LookAt(_Player.Position);
+
+        _CannonCreator.Reset();
+
+        _Cannons.Clear();
     }
 
     protected override void LoadContent()
@@ -52,8 +68,8 @@ public class LightspeedGame : Game
         Texture2D playerTexture = Content.Load<Texture2D>("Player/player");
         _Player.Texture = new Sprite(playerTexture, frameCount: 4, fps: 8);
 
-        BitmapFont scoreFont = Content.Load<BitmapFont>("Font/score_font");
-        _Score.ScoreFont = scoreFont;
+        _Font = Content.Load<BitmapFont>("Font/score_font");
+        _Score.ScoreFont = _Font;
     }
 
     protected override void Update(GameTime gameTime)
@@ -61,6 +77,35 @@ public class LightspeedGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         {
             Exit();
+        }
+
+        if (!_GameOver)
+        {
+            _GameOver = IsGameOver();
+            _ButtonReleasedAfterGameOver = false;
+        }
+
+        if (_GameOver &&
+            GamePad.GetState(PlayerIndex.One).Buttons.A != ButtonState.Pressed &&
+            !Keyboard.GetState().IsKeyDown(Keys.Space) &&
+            !Keyboard.GetState().IsKeyDown(Keys.U))
+        {
+            _ButtonReleasedAfterGameOver = true;
+            return;
+        }
+
+        if (_GameOver && !_ButtonReleasedAfterGameOver)
+        {
+            return;
+        }
+
+        if (_GameOver &&
+            _ButtonReleasedAfterGameOver &&
+            (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed ||
+            Keyboard.GetState().IsKeyDown(Keys.Space) ||
+            Keyboard.GetState().IsKeyDown(Keys.U)))
+        {
+            Reset();
         }
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed ||
@@ -125,8 +170,34 @@ public class LightspeedGame : Game
             cannon.Draw(_SpriteBatch);
         }
 
+        if (_GameOver)
+        {
+            string gameOverText = "Game Over";
+            float scale = _Camera.BoundingRectangle.Size.Width / 100f;
+
+            Vector2 fontOrigin = _Font.MeasureString(gameOverText) / 2;
+            Vector2 screenCenter = new(_Camera.Position.X + (_Camera.BoundingRectangle.Size.Width / 2),
+                _Camera.Position.Y + (_Camera.BoundingRectangle.Size.Height / 2));
+
+            _SpriteBatch.DrawString(_Font, gameOverText, screenCenter, Color.White, rotation: 0, fontOrigin, scale, SpriteEffects.None, layerDepth: 0f);
+        }
+
         _SpriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    private bool IsGameOver()
+    {
+        foreach (Projectile projectile in _Cannons.SelectMany(cannon => cannon.Projectiles))
+        {
+            RectangleF projectileHitbox = new(projectile.Position, projectile.Size);
+            if (_Player.Hitbox.Intersects(projectileHitbox.BoundingRectangle))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

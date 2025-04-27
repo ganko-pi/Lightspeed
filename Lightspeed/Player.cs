@@ -1,12 +1,12 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace Lightspeed;
 
 public class Player
 {
-    private Vector2 _Position = new(50, 100);
+    private Vector2 _Position = new();
     private readonly Dictionary<Speed, int> _SpeedMap = new()
     {
         { Speed.Slow, 1000 },
@@ -18,6 +18,20 @@ public class Player
     public Sprite Texture {get; set; }
 
     public Vector2 Position { get => _Position; }
+
+    public CircleF Hitbox { get; set; }
+
+    public Player()
+    {
+        Reset();
+    }
+
+    public void Reset()
+    {
+        _Position = new();
+        Speed = Speed.Fast;
+        Hitbox = new CircleF();
+    }
 
     public void Update(GameTime gameTime)
     {
@@ -36,5 +50,6 @@ public class Player
     private void UpdateSpritePosition()
     {
         Texture.Position = new Vector2(_Position.X - (Texture.Size.X - Texture.Origin.X), _Position.Y - (Texture.Size.Y - Texture.Origin.Y));
+        Hitbox = new CircleF(Texture.Position, Texture.Size.X / 8 * 3);
     }
 }
